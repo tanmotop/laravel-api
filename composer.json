@@ -1,0 +1,19 @@
+{
+    "name": "tanmo/api",
+    "description": "A laravel api develop package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tanmo",
+            "email": "410536770@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Tanmo\\Api\\": "src/"
+        }
+    }
+}
