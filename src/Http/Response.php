@@ -76,10 +76,7 @@ class Response extends IlluminateResponse implements Responsable
     public function toResponse($request)
     {
         if (!empty($this->resource)) {
-            $response = $this->resource->toResponse($request);
-            $response->setStatusCode($this->status());
-
-            return $response;
+            return $this->resource->response($request)->setStatusCode($this->status());
         }
 
         ///
