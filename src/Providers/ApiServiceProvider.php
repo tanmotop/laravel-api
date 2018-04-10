@@ -16,6 +16,12 @@ class ApiServiceProvider extends ServiceProvider
         if (file_exists($routes = api_path('routes.php'))) {
             $this->loadRoutesFrom($routes);
         }
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../../config' => config_path()
+            ], 'laravel-api-config');
+        }
     }
 
     /**
