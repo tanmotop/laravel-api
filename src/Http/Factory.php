@@ -15,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Tanmo\Api\Exceptions\ApiException;
 
 class Factory
 {
@@ -34,10 +35,10 @@ class Factory
 
     /**
      * @param null $location
-     * @param null $content
+     * @param string $content
      * @return Response
      */
-    public function created($content = null, $location = null)
+    public function created($content = 'Created', $location = null)
     {
         $this->response->created()->setContent($content);
         if (! is_null($location)) {
@@ -49,10 +50,10 @@ class Factory
 
     /**
      * @param null $location
-     * @param null $content
+     * @param string $content
      * @return Response
      */
-    public function accepted($content = null, $location = null)
+    public function accepted($content = 'Accepted', $location = null)
     {
         $this->response->accepted()->setContent($content);
         if (! is_null($location)) {
@@ -108,7 +109,7 @@ class Factory
      */
     public function error($message, $statusCode)
     {
-        throw new HttpException($statusCode, $message);
+        throw new ApiException($statusCode, $message);
     }
 
     /**

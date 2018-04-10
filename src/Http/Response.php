@@ -22,6 +22,29 @@ class Response extends IlluminateResponse implements Responsable
     protected $resource;
 
     /**
+     * @var bool
+     */
+    protected $debug;
+
+    /**
+     * @var
+     */
+    protected $debugData;
+
+    /**
+     * Response constructor.
+     * @param string $content
+     * @param int $status
+     * @param array $headers
+     */
+    public function __construct($content = '', $status = 200, array $headers = array())
+    {
+        $this->debug = config('api.debug');
+
+        parent::__construct($content, $status, $headers);
+    }
+
+    /**
      * @param $resource
      * @return $this
      */
@@ -59,6 +82,27 @@ class Response extends IlluminateResponse implements Responsable
             return $response;
         }
 
+        ///
+        $data = [
+            'status_code' => $this->getStatusCode(),
+            'message' => $this->getContent(),
+        ];
+
+        if ($this->debug && !empty($this->debugData)) {
+            $data['debug'] = $this->debugData;
+        }
+
+        return response()->json($data, $this->status());
+    }
+
+    /**
+     * @param $data
+     * @return $this
+     */
+    public function setDebugData($data)
+    {
+        $this->debugData = $data;
+
         return $this;
     }
 
@@ -83,7 +127,7 @@ class Response extends IlluminateResponse implements Responsable
     }
 
     /**
-     * @return $this
+     *
      */
     public function noContent()
     {

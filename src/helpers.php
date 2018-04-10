@@ -14,3 +14,16 @@ if (!function_exists('api_path')) {
         return ucfirst(config('api.directory')).($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 }
+
+if (!function_exists('api')) {
+
+    /**
+     * Get api Factory
+     *
+     * @return \Tanmo\Api\Http\Factory
+     */
+    function api()
+    {
+        return app(\Tanmo\Api\Http\Factory::class);
+    }
+}
