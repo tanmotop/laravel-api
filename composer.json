@@ -14,6 +14,16 @@
     "autoload": {
         "psr-4": {
             "Tanmo\\Api\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Tanmo\\Api\\Providers\\ApiServiceProvider"
+            ]
         }
     }
 }

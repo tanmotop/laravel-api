@@ -10,26 +10,26 @@
 namespace Tanmo\Api\Http;
 
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Factory
 {
     /**
-     * @param null $location
-     * @param null $content
-     * @return Response
+     * @var Response
      */
-    public function created($location = null, $content = null)
+    protected $response;
+
+    /**
+     * Factory constructor.
+     * @param Response $response
+     */
+    public function __construct(Response $response)
     {
-        $response = new Response($content);
-        $response->setStatusCode(201);
-
-        if (! is_null($location)) {
-            $response->header('Location', $location);
-        }
-
-        return $response;
+        $this->response = $response;
     }
 
     /**
@@ -37,16 +37,29 @@ class Factory
      * @param null $content
      * @return Response
      */
-    public function accepted($location = null, $content = null)
+    public function created($content = null, $location = null)
     {
-        $response = new Response($content);
-        $response->setStatusCode(202);
-
+        $this->response->created()->setContent($content);
         if (! is_null($location)) {
-            $response->header('Location', $location);
+            $this->response->header('Location', $location);
         }
 
-        return $response;
+        return $this->response;
+    }
+
+    /**
+     * @param null $location
+     * @param null $content
+     * @return Response
+     */
+    public function accepted($content = null, $location = null)
+    {
+        $this->response->accepted()->setContent($content);
+        if (! is_null($location)) {
+            $this->response->header('Location', $location);
+        }
+
+        return $this->response;
     }
 
     /**
@@ -54,10 +67,39 @@ class Factory
      */
     public function noContent()
     {
-        $response = new Response(null);
-        $response->setStatusCode(204);
+        return $this->response->noContent();
+    }
 
-        return $response;
+    /**
+     * @param $resource
+     * @param $transformer
+     * @return Response
+     */
+    public function item($resource, $transformer)
+    {
+        if (!class_exists($transformer) || !is_subclass_of($transformer, JsonResource::class)) {
+            $this->errorInternal();
+        }
+
+        return $this->response->setResource(new $transformer($resource));
+    }
+
+    /**
+     * @param $resources
+     * @param $transformer
+     * @return Response
+     */
+    public function collection($resources, $transformer)
+    {
+        if (!is_null($transformer) && is_subclass_of($transformer, ResourceCollection::class)) {
+            return $this->response->setResource(new $transformer($resources));
+        }
+
+        if (!class_exists($transformer) || !is_subclass_of($transformer, JsonResource::class)) {
+            $this->errorInternal();
+        }
+
+        return $this->response->setResource(new AnonymousResourceCollection($resources, $transformer));
     }
 
     /**
