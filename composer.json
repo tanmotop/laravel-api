@@ -1,5 +1,5 @@
 {
-    "name": "tanmo/api",
+    "name": "tanmo/laravel-api",
     "description": "A laravel api develop package",
     "type": "library",
     "license": "MIT",
