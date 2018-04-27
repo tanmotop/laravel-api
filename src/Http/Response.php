@@ -76,7 +76,7 @@ class Response extends IlluminateResponse implements Responsable
     public function toResponse($request)
     {
         if (!empty($this->resource)) {
-            return $this->resource->response($request)->setStatusCode($this->status());
+            return $this->resource->response($request)->setStatusCode($this->status())->withHeaders($this->headers);
         }
 
         ///
@@ -89,7 +89,7 @@ class Response extends IlluminateResponse implements Responsable
             $data['debug'] = $this->debugData;
         }
 
-        return response()->json($data, $this->status());
+        return response()->json($data, $this->status())->withHeaders($this->headers);
     }
 
     /**
