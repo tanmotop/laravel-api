@@ -16,6 +16,25 @@ use Tanmo\Api\Http\Response;
 class ApiException extends HttpException
 {
     /**
+     * @var Response
+     */
+    protected $response;
+
+    /**
+     * ApiException constructor.
+     * @param int $statusCode
+     * @param null $message
+     * @param \Exception|null $previous
+     * @param array $headers
+     * @param int $code
+     */
+    public function __construct($statusCode, $message = null, \Exception $previous = null, array $headers = array(), $code = 0)
+    {
+        $this->response = new Response($message, $statusCode, $headers);
+        parent::__construct($statusCode, $message, $previous, $headers, $code);
+    }
+
+    /**
      * @return Response
      */
     public function render()
@@ -27,6 +46,6 @@ class ApiException extends HttpException
             'trace' => explode("\n", $this->getTraceAsString()),
         ];
 
-        return (new Response($this->getMessage(), $this->getStatusCode(), $this->getHeaders()))->setDebugData($debug);
+        return $this->response->setDebugData($debug);
     }
 }

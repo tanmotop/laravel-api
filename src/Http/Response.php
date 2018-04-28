@@ -32,6 +32,11 @@ class Response extends IlluminateResponse implements Responsable
     protected $debugData;
 
     /**
+     * @var array
+     */
+    protected $meta = [];
+
+    /**
      * Response constructor.
      * @param string $content
      * @param int $status
@@ -62,7 +67,10 @@ class Response extends IlluminateResponse implements Responsable
     {
         if (!empty($this->resource)) {
             $this->resource->additional(['meta' => $meta]);
+            return $this;
         }
+
+        $this->meta = $meta;
 
         return $this;
     }
@@ -84,6 +92,10 @@ class Response extends IlluminateResponse implements Responsable
             'status_code' => $this->getStatusCode(),
             'message' => $this->getContent(),
         ];
+
+        if (!empty($this->meta)) {
+            $data['meta'] = $this->meta;
+        }
 
         if ($this->debug && !empty($this->debugData)) {
             $data['debug'] = $this->debugData;
